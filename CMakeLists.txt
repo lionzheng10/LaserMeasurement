@@ -1,24 +1,25 @@
-cmake_minimum_required (VERSION 2.6)
-project (Tutorial)
+project (LaserMeasurement)
 
-# The version number.
-set (Tutorial_VERSION_MAJOR 2)
-set (Tutorial_VERSION_MINOR 1)
+cmake_minimum_required (VERSION 3.5)
 
-# configure a header file to pass some of the CMake settings
-# to the source code
-configure_file (
-#  "${PROJECT_SOURCE_DIR}/TutorialConfig.h.in"
-  "${PROJECT_BINARY_DIR}/TutorialConfig.h"
-  )
-  
-# add the binary tree to the search path for include files
-# so that we will find TutorialConfig.h
-include_directories("${PROJECT_BINARY_DIR}")
+add_definitions(-std=c++11)
 
-# add the executable
-add_executable(main main.cxx)
+set(CXX_FLAGS "-Wall")
+set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
-SET_TARGET_PROPERTIES(main PROPERTIES LINKER_LANGUAGE C++)
+set(sources src/main.cpp src/kalman_filter.cpp src/tracking.cpp src/measurement_package.h src/kalman_filter.h src/tracking.h)
 
-#$(info $$PROJECT_SOURCE_DIR is [${PROJECT_SOURCE_DIR}])
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+
+include_directories(/usr/local/include)
+include_directories(/usr/local/opt/openssl/include)
+link_directories(/usr/local/lib)
+link_directories(/usr/local/opt/openssl/lib)
+link_directories(/usr/local/Cellar/libuv/1.11.0/lib)
+
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin") 
+
+add_executable(main ${sources})
+
+#target_link_libraries(ExtendedKF z ssl uv uWS)
