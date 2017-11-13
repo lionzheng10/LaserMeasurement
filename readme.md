@@ -3,7 +3,7 @@ https://github.com/lionzheng10/LaserMeasurement
 
 The laser measurement project is come from Udacity Nano degree course "self driving car" term2, Lesson5.
 
-##Introduction
+## Introduction
 
 
 Imagine you are in a car equipped with sensors on the outside. The car sensors can detect objects moving around: for example, the sensors might detect a bicycle.
@@ -20,15 +20,28 @@ The Kalman Filter algorithm will go through the following steps:
 ## Kalman filter equation description
 
 Kalman Filter overview
+
 <img src=".\img\Kalman-filter-equation.png" width="450">
 2D state motion. State transition matrix, x′ = Fx + v
-<img src=".\img\2D_stateTransitionMatrix.png" width="400">
+
 
 - x is the mean state vector(4x1).For an extended Kalman filter, the mean state vector contains information about the object's position and velocity that you are tracking. It is called the "mean" state vector because position and velocity are represented by a gaussian distribution with mean x.
 - v is a prediction noise (4x1)
 - F is a state transistion matrix (4 x 4), it's value is depend on Δt
 - P is the state covariance matrix, which contains information about the uncertainty of the object's position and velocity.
-- Q is process covariance matrix (4x4), 
+- Q is process covariance matrix (4x4), see below 
+- z is the sensor information that tells where the object is relative to the car.
+- y is diffrence between where we think we are with what the sensor tell us `y = z - Hx'`.
+- H is a transform matrix. Depend on the shape of x and the shape of y, H is fixed matrix.
+- R is the ***uncertainty*** of sensor measurement.
+- S is the total uncertainty.
+- K , often called ***Kalman filter gain***, combines the uncertainty of where we think we are P' with the uncertainty of our sensor measurement R.If our sensor measurements are very uncertain (R is high relative to P'), then the Kalman filter will give more weight to where we think we are: x′. If where we think we are is uncertain (P' is high relative to R), the Kalman filter will put more weight on the sensor measurement: z.
+
+
+## State transition Matrix F
+
+<img src=".\img\2D_stateTransitionMatrix.png" width="400">
+
 
 ## Process Covariance Matrix Q
 
@@ -66,13 +79,25 @@ Define an class `MeasurementPackage` to store sensor type and measurement data.
 - ***tracking.cpp***
 The constructor function `Tracking()` declare the size and initial value of `Kalman filter` matixes.
 The `ProcessMeasurement` function process a single measurement, it compute the time elapsed between the current and previous measurements. Set the process covariance matrix Q. Call kalman filter function`predict` and `update`. And output state vector and Covariance Matrix.
-- ***obj_pose-laser-radar-synthetic-input.txt***  
-A data file download from course web site, put it in the same folder with excutable file.
 - ***Eigen folder***
 Library for operate matix and vector and so on. Put this folder in `src` folder.
 
+## Data file
+- ***obj_pose-laser-radar-synthetic-input.txt***  
+A data file download from course web site, put it in the same folder with excutable file.
+
+Data Example:
+
+| Lidar/Radar |measure px|measure py|time-stamp|
+|------------:|---------:|---------:|---------:|
+| L           | 9.68e-01 | 4.05e-01 |1477010443100000 |
+
+
 ## Makefile structure
 - CMakeLists.txt
+
+
+<!-- your comment goes here -->
 
 ## How to build and run this project
 I am using ubuntu 16.4
@@ -85,10 +110,16 @@ I am using ubuntu 16.4
 This is what the output looks like.
 ``` bash
 lion@HP6560b:~/carnd2/LaserMeasurement/build$ ./main
+lion@HP6560b:~/carnd2/LaserMeasurement/build$ ./main
 ------ step0------
 Kalman Filter Initialization 
 
 ------ step1------
+K(Kalman filter gain)= 
+0.997959        0
+       0 0.997959
+ 9.07248        0
+       0  9.07248
 z_(lidar measure value: px,py)= 
 0.968521
  0.40545
@@ -103,7 +134,13 @@ P_(state Covariance Matrix)=
  0.204131         0   92.7797         0
         0  0.204131         0   92.7797
 
+
 ------ step2------
+K(Kalman filter gain)= 
+0.977804        0
+       0 0.977804
+  9.3564        0
+       0   9.3564
 z_(lidar measure value: px,py)= 
 0.947752
 0.636824
@@ -117,4 +154,61 @@ P_(state Covariance Matrix)=
         0 0.0220006         0  0.210519
  0.210519         0   4.08801         0
         0  0.210519         0   4.08801
+
+...
+...
+...
+
+------ step19------
+K(Kalman filter gain)= 
+0.41987       0
+      0 0.41987
+1.13577       0
+      0 1.13577
+z_(lidar measure value: px,py)= 
+4.79359
+1.04199
+x_(state vector: px,py,vx,vy)= 
+ 4.76588
+0.930549
+ 2.14297
+0.447356
+P_(state Covariance Matrix)= 
+0.00944706          0  0.0255548          0
+         0 0.00944706          0  0.0255548
+ 0.0255548          0   0.159861          0
+         0  0.0255548          0   0.159861
+         
+
+------ step20------
+K(Kalman filter gain)= 
+0.419828        0
+       0 0.419828
+ 1.13561        0
+       0  1.13561
+z_(lidar measure value: px,py)= 
+ 4.92764
+0.963212
+x_(state vector: px,py,vx,vy)= 
+ 4.95812
+0.970216
+ 2.08331
+0.433646
+P_(state Covariance Matrix)= 
+0.00944614          0  0.0255513          0
+         0 0.00944614          0  0.0255513
+ 0.0255513          0   0.159848          0
+         0  0.0255513          0   0.159848
+
 ```
+
+## Further questions
+
+#### 1. What is the Kalman filter gain mean?
+In this project, the Kalman filter gain is an 4x2 matrix. 
+
+#### 2. What is the relation between Kalman gain `K` and State Covariance Matrix `P_`
+...
+
+#### 3. Is there any parameter we can tune in the Kalman filter algorithm?
+...

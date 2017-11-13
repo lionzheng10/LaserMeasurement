@@ -26,6 +26,9 @@ public:
 	///* measurement covariance matrix
 	MatrixXd R_;
 
+	///* kalman filter gain
+	MatrixXd K_;
+
 	/**
 	 * Constructor
 	 */

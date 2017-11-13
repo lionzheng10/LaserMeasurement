@@ -1,4 +1,7 @@
+#include <iostream>
 #include "kalman_filter.h"
+
+using namespace std;
 
 KalmanFilter::KalmanFilter() {
 }
@@ -20,6 +23,9 @@ void KalmanFilter::Update(const VectorXd &z) {
 	MatrixXd Si = S.inverse();
 	MatrixXd PHt = P_ * Ht;
 	MatrixXd K = PHt * Si;
+
+	std::cout << "K(Kalman filter gain)= "<< std::endl << K << std::endl;
+	//K_ = K;
 
 	//new estimate
 	x_ = x_ + (K * y);

@@ -86,9 +86,9 @@ void Tracking::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 	//measurement update
 	kf_.Update(measurement_pack.raw_measurements_);
-	std::cout << "Q_()= "<< std::endl << kf_.Q_ << std::endl;
+	//std::cout << "K_(Kalman filter gain)= "<< std::endl << kf_.K_ << std::endl;
 	std::cout << "z_(lidar measure value: px,py)= "<< std::endl << measurement_pack.raw_measurements_ << std::endl;
 	std::cout << "x_(state vector: px,py,vx,vy)= "<< std::endl << kf_.x_ << std::endl;
-	std::cout << "P_(state Covariance Matrix)= "<< std::endl << kf_.P_ << std::endl;
+	std::cout << "P_(state Covariance Matrix)= "<< std::endl << kf_.P_ << std::endl<< std::endl;
 
 }
